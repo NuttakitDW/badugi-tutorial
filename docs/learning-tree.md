@@ -18,32 +18,38 @@ A staged path from "never heard of it" to confidently playing Badugi in mixed ga
                        │   Blinds · Draws · Bets  │
                        └─────────────┬────────────┘
                                      │
-              ┌──────────────────────┼──────────────────────┐
-              │                      │                      │
-   ┌──────────▼────────┐  ┌──────────▼────────┐  ┌──────────▼────────┐
-   │ 3a. Starting      │  │ 3b. Position &    │  │ 3c. Reading       │
-   │     Hands         │  │     Order         │  │     Draw Counts   │
-   └──────────┬────────┘  └──────────┬────────┘  └──────────┬────────┘
-              │                      │                      │
-              └──────────────────────┼──────────────────────┘
+                       ┌─────────────▼────────────┐
+                       │   3. Starting Hands      │
+                       │   What to play           │
+                       └─────────────┬────────────┘
                                      │
                        ┌─────────────▼────────────┐
-                       │   4. Drawing Strategy    │
+                       │   4. Position            │
+                       │   Last-to-act = info     │
+                       └─────────────┬────────────┘
+                                     │
+                       ┌─────────────▼────────────┐
+                       │   5. Reading Draws       │
+                       │   Discard counts         │
+                       └─────────────┬────────────┘
+                                     │
+                       ┌─────────────▼────────────┐
+                       │   6. Drawing Strategy    │
                        │   Improve · Pat · Fold   │
                        └─────────────┬────────────┘
                                      │
                        ┌─────────────▼────────────┐
-                       │   5. Snowing (Bluffing)  │
+                       │   7. Snowing (Bluffing)  │
                        │   Card removal · Lines   │
                        └─────────────┬────────────┘
                                      │
                        ┌─────────────▼────────────┐
-                       │   6. Pot Odds & Bet      │
-                       │      Sizing              │
+                       │   8. Pot Odds & Sizing   │
+                       │   Price your draws       │
                        └─────────────┬────────────┘
                                      │
                        ┌─────────────▼────────────┐
-                       │   7. Live Practice       │
+                       │   9. Live Practice       │
                        │   Low stakes · Review    │
                        └──────────────────────────┘
 ```
@@ -101,9 +107,9 @@ Format: typically **fixed-limit** triple-draw, six-handed. Small bet on draw 1, 
 
 ---
 
-## Level 3 — Pre-Draw Fundamentals (parallel topics)
+## Level 3 — Starting Hands
 
-### 3a. Starting Hands
+**Goal:** pick hands that can actually win.
 
 | Position | Minimum playable hand |
 |---|---|
@@ -113,12 +119,25 @@ Format: typically **fixed-limit** triple-draw, six-handed. Small bet on draw 1, 
 
 Aim for a **7-Badugi or better**. Eights are marginal. Avoid drawing to nines or tens.
 
-### 3b. Position
+📚 Read: [`badugi-poker-101.md`](./badugi-poker-101.md) — *Strategy 2: Starting Cards Really Matter*
+
+---
+
+## Level 4 — Position
+
+**Goal:** use being last-to-act as information.
 
 - Last to act = best position. You see how many cards opponents draw before you decide.
-- Position widens your opening range and is what makes snowing possible.
+- Position widens your opening range.
+- Snowing usually only works in position — you need to react to opponents' draws.
 
-### 3c. Reading Draw Counts
+📚 Read: [`badugi-poker-101.md`](./badugi-poker-101.md) — *Strategy 1: Position, Position, Position*
+
+---
+
+## Level 5 — Reading Draws
+
+**Goal:** read opponents from how many cards they take.
 
 Before each draw, count cards your opponents take:
 
@@ -126,11 +145,11 @@ Before each draw, count cards your opponents take:
 - **1** → drawing to a Badugi or a strong 3-card.
 - **2+** → weak holding, vulnerable.
 
-📚 Read: [`badugi-poker-101.md`](./badugi-poker-101.md) — *Strategy 1, 2, 3*
+This is the single most reliable source of information in a triple-draw game — there is no equivalent in flop poker.
 
 ---
 
-## Level 4 — Drawing Strategy
+## Level 6 — Drawing Strategy
 
 **Goal:** make good draw/pat/fold decisions on each street.
 
@@ -150,7 +169,7 @@ Before each draw, count cards your opponents take:
 
 ---
 
-## Level 5 — Snowing (Bluffing)
+## Level 7 — Snowing (Bluffing)
 
 **Goal:** know when to represent a Badugi you don't have.
 
@@ -160,7 +179,7 @@ Good snow candidates:
 - Opponents are still drawing on the last draw and need a card from your blocked suit.
 - You're **in position** so you can react to their draws.
 
-Setup pattern (from the transcript example):
+Setup pattern:
 
 1. Draw 1: dump junk, keep your blocker(s).
 2. Draw 2: discard one to keep selling the story.
@@ -172,7 +191,7 @@ If you're never getting caught snowing, you're not snowing enough.
 
 ---
 
-## Level 6 — Pot Odds & Bet Sizing
+## Level 8 — Pot Odds & Sizing
 
 **Goal:** stop calling reflexively on big-bet streets.
 
@@ -184,7 +203,7 @@ If you're never getting caught snowing, you're not snowing enough.
 
 ---
 
-## Level 7 — Live Practice
+## Level 9 — Live Practice
 
 **Goal:** convert knowledge into instinct.
 
