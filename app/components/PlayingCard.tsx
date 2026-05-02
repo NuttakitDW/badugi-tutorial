@@ -18,15 +18,22 @@ export function PlayingCard({ rank, suit }: PlayingCardProps) {
   return (
     <div
       className={[
-        "relative inline-flex h-20 w-14 flex-col items-center justify-center gap-1",
-        "rounded-lg border border-slate-700/80 bg-slate-900/90 shadow-lg shadow-black/40",
+        "relative inline-flex flex-col items-center justify-center gap-0.5 sm:gap-1",
+        "h-14 w-10 sm:h-20 sm:w-14",
+        "rounded-md sm:rounded-lg",
+        "border border-slate-700/80 bg-slate-900/90 shadow-lg shadow-black/40",
         "ring-1 ring-inset ring-white/[0.04]",
       ].join(" ")}
     >
-      <span className={`font-mono text-xl font-bold leading-none ${colorClass}`}>
+      <span
+        className={`font-mono text-base font-bold leading-none sm:text-xl ${colorClass}`}
+      >
         {rank}
       </span>
-      <SuitIcon suit={suit} size={20} />
+      <SuitIcon
+        suit={suit}
+        className={`${colorClass} h-3.5 w-3.5 sm:h-5 sm:w-5`}
+      />
     </div>
   );
 }
@@ -37,7 +44,7 @@ interface SuitIconProps {
   className?: string;
 }
 
-export function SuitIcon({ suit, size = 16, className }: SuitIconProps) {
+export function SuitIcon({ suit, size, className }: SuitIconProps) {
   return (
     <svg
       aria-hidden
@@ -53,7 +60,9 @@ export function SuitIcon({ suit, size = 16, className }: SuitIconProps) {
       {suit === "H" && (
         <path d="M12 21C12 21 4 14 4 9.5C4 6.5 6.2 4.5 9 4.5C10.5 4.5 11.5 5.5 12 7C12.5 5.5 13.5 4.5 15 4.5C17.8 4.5 20 6.5 20 9.5C20 14 12 21 12 21Z" />
       )}
-      {suit === "D" && <path d="M12 2L21 12L12 22L3 12Z" />}
+      {suit === "D" && (
+        <path d="M12 2L21 12L12 22L3 12Z" />
+      )}
       {suit === "C" && (
         <path d="M12 3C9.8 3 8 4.8 8 7C8 8 8.4 8.9 9 9.6C8.5 9.4 7.8 9.3 7 9.3C4.8 9.3 3 11.1 3 13.3C3 15.5 4.8 17.3 7 17.3C8.5 17.3 9.8 16.5 10.5 15.4L10 22H14L13.5 15.4C14.2 16.5 15.5 17.3 17 17.3C19.2 17.3 21 15.5 21 13.3C21 11.1 19.2 9.3 17 9.3C16.2 9.3 15.5 9.4 15 9.6C15.6 8.9 16 8 16 7C16 4.8 14.2 3 12 3Z" />
       )}

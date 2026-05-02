@@ -214,7 +214,7 @@ export function GameFlowAnimation() {
   };
 
   return (
-    <figure className="mt-8 rounded-2xl border border-sky-400/20 bg-sky-400/[0.04] p-5 sm:p-6">
+    <figure className="mt-6 rounded-2xl border border-sky-400/20 bg-sky-400/[0.04] p-3.5 sm:mt-8 sm:p-6">
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <figcaption className="text-[10px] font-semibold uppercase tracking-[0.22em] text-sky-300/90">
@@ -231,12 +231,12 @@ export function GameFlowAnimation() {
 
       <StakesBar street={current.street} />
 
-      <h3 className="mt-4 text-base font-semibold text-white sm:text-lg">
+      <h3 className="mt-3 text-sm font-semibold text-white sm:mt-4 sm:text-lg">
         {current.action}
       </h3>
 
-      <div key={step} className="example-fade mt-5">
-        <div className="grid grid-cols-[1fr_auto_1fr] items-start gap-3 sm:gap-6">
+      <div key={step} className="example-fade mt-3.5 sm:mt-5">
+        <div className="grid grid-cols-[1fr_auto_1fr] items-start gap-1.5 sm:gap-6">
           <PlayerView
             player={current.p1}
             label="Player 1"
@@ -253,12 +253,12 @@ export function GameFlowAnimation() {
           />
         </div>
 
-        <p className="mt-5 border-l-2 border-sky-400/50 pl-4 text-sm leading-relaxed text-slate-100 sm:text-[15px]">
+        <p className="mt-4 border-l-2 border-sky-400/50 pl-3 text-[13px] leading-snug text-slate-100 sm:mt-5 sm:pl-4 sm:text-[15px] sm:leading-relaxed">
           {current.detail}
         </p>
       </div>
 
-      <div className="mt-5 flex gap-1">
+      <div className="mt-4 flex gap-0.5 sm:mt-5 sm:gap-1">
         {STEPS.map((_, i) => (
           <button
             key={i}
@@ -277,7 +277,7 @@ export function GameFlowAnimation() {
         ))}
       </div>
 
-      <div className="mt-4 flex items-center justify-center gap-2">
+      <div className="mt-3 flex items-center justify-center gap-2 sm:mt-4">
         <ControlButton onClick={goPrev} disabled={step === 0} ariaLabel="Previous step">
           <ChevronIcon dir="left" />
         </ControlButton>
@@ -309,19 +309,19 @@ function PlayerView({
   return (
     <div
       className={[
-        "flex min-w-0 flex-col items-center gap-2 rounded-xl px-2 py-2 transition-all duration-300",
+        "flex min-w-0 flex-col items-center gap-1.5 rounded-xl px-1 py-1.5 transition-all duration-300 sm:gap-2 sm:px-2 sm:py-2",
         acting
           ? "bg-sky-400/[0.07] ring-1 ring-sky-400/40 shadow-[0_0_30px_-8px_rgba(56,189,248,0.5)]"
           : "ring-1 ring-transparent",
       ].join(" ")}
     >
-      <div className="flex flex-wrap items-center justify-center gap-1.5">
-        <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-400">
+      <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-1.5">
+        <span className="text-[9px] font-semibold uppercase tracking-[0.14em] text-slate-400 sm:text-[10px] sm:tracking-[0.16em]">
           {label}
         </span>
         {hasButton && <DealerButton />}
         {player.position && (
-          <span className="rounded bg-white/5 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-sky-300">
+          <span className="rounded bg-white/5 px-1 py-0.5 text-[9px] font-bold uppercase tracking-wider text-sky-300 sm:px-1.5">
             {player.position}
           </span>
         )}
@@ -329,7 +329,7 @@ function PlayerView({
 
       <div
         className={[
-          "flex gap-1 transition-all",
+          "flex gap-0.5 transition-all sm:gap-1",
           player.winner ? "drop-shadow-[0_0_18px_rgba(56,189,248,0.6)]" : "",
         ].join(" ")}
       >
@@ -373,9 +373,9 @@ function PlayerView({
         })}
       </div>
 
-      <div className="flex min-h-[20px] flex-col items-center gap-1">
+      <div className="flex min-h-[18px] flex-col items-center gap-0.5 sm:min-h-[20px] sm:gap-1">
         {player.bet > 0 && (
-          <span className="chip-place inline-flex items-center gap-1 rounded-full border border-sky-400/30 bg-sky-500/15 px-2.5 py-0.5 font-mono text-[11px] font-semibold text-sky-100 shadow-[0_2px_10px_-2px_rgba(56,189,248,0.5)]">
+          <span className="chip-place inline-flex items-center gap-1 rounded-full border border-sky-400/30 bg-sky-500/15 px-1.5 py-0.5 font-mono text-[10px] font-semibold text-sky-100 shadow-[0_2px_10px_-2px_rgba(56,189,248,0.5)] sm:px-2.5 sm:text-[11px]">
             <ChipIcon />
             <span>${player.bet}</span>
           </span>
@@ -383,7 +383,7 @@ function PlayerView({
         {player.action && (
           <span
             className={[
-              "text-[10px] font-bold uppercase tracking-[0.18em]",
+              "text-[9px] font-bold uppercase tracking-[0.14em] sm:text-[10px] sm:tracking-[0.18em]",
               player.winner ? "text-amber-300" : "text-sky-300",
             ].join(" ")}
           >
@@ -393,7 +393,7 @@ function PlayerView({
         {player.drawing != null && (
           <span
             className={[
-              "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.18em]",
+              "inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.14em] sm:px-2 sm:text-[10px] sm:tracking-[0.18em]",
               player.drawing === 0
                 ? "border border-emerald-400/40 bg-emerald-400/10 text-emerald-300"
                 : "border border-amber-400/40 bg-amber-400/10 text-amber-300",
@@ -433,12 +433,12 @@ function StakesBar({ street }: { street: string }) {
   const bigActive = street === "Post-draw 2" || street === "Post-draw 3";
 
   return (
-    <div className="mt-3 flex flex-wrap items-center gap-1.5">
-      <span className="rounded-md border border-white/10 bg-white/5 px-2 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-300">
+    <div className="mt-2.5 flex flex-wrap items-center gap-1 sm:mt-3 sm:gap-1.5">
+      <span className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-[0.14em] text-slate-300 sm:rounded-md sm:px-2 sm:py-1 sm:text-[10px] sm:tracking-[0.18em]">
         $40 / $80 Limit
       </span>
-      <BetSizePill label="Small Bet" amount={40} active={smallActive} />
-      <BetSizePill label="Big Bet" amount={80} active={bigActive} />
+      <BetSizePill label="Small" amount={40} active={smallActive} />
+      <BetSizePill label="Big" amount={80} active={bigActive} />
     </div>
   );
 }
@@ -455,7 +455,7 @@ function BetSizePill({
   return (
     <span
       className={[
-        "inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] transition-all",
+        "inline-flex items-center gap-1 rounded border px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-[0.14em] transition-all sm:rounded-md sm:px-2 sm:py-1 sm:text-[10px] sm:tracking-[0.18em]",
         active
           ? "border-sky-400/60 bg-sky-400/15 text-sky-200 shadow-[0_0_18px_-4px_rgba(56,189,248,0.5)]"
           : "border-white/10 bg-white/[0.03] text-slate-500",
@@ -469,13 +469,13 @@ function BetSizePill({
 
 function PotView({ amount }: { amount: number }) {
   return (
-    <div className="flex shrink-0 flex-col items-center gap-1.5 px-2">
-      <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+    <div className="flex shrink-0 flex-col items-center gap-1 px-1 sm:gap-1.5 sm:px-2">
+      <div className="text-[9px] font-semibold uppercase tracking-[0.14em] text-slate-400 sm:text-[10px] sm:tracking-[0.18em]">
         Pot
       </div>
       <div
         key={amount}
-        className="pot-pulse font-mono text-2xl font-bold text-sky-200 sm:text-3xl"
+        className="pot-pulse font-mono text-lg font-bold text-sky-200 sm:text-3xl"
       >
         ${amount}
       </div>
@@ -510,7 +510,7 @@ const SUIT_COLOR: Record<SuitCode, string> = {
 
 function MiniCard({ rank, suit }: { rank: string; suit: SuitCode }) {
   return (
-    <div className="flex h-12 w-9 flex-col items-center justify-center gap-0.5 rounded-md border border-slate-700 bg-slate-900/95 ring-1 ring-inset ring-white/5">
+    <div className="flex h-10 w-7 flex-col items-center justify-center gap-0.5 rounded border border-slate-700 bg-slate-900/95 ring-1 ring-inset ring-white/5 sm:h-12 sm:w-9 sm:rounded-md">
       <span
         className={`font-mono text-[13px] font-bold leading-none ${SUIT_COLOR[suit]}`}
       >
@@ -539,7 +539,7 @@ function MiniCardBack({
   return (
     <div
       className={[
-        "h-12 w-9 rounded-md border border-sky-400/30 bg-gradient-to-br from-sky-800/40 via-sky-900/60 to-slate-950 shadow-inner",
+        "h-10 w-7 rounded border border-sky-400/30 bg-gradient-to-br from-sky-800/40 via-sky-900/60 to-slate-950 shadow-inner sm:h-12 sm:w-9 sm:rounded-md",
         animClass,
       ].join(" ")}
       style={delayMs ? { animationDelay: `${delayMs}ms` } : undefined}
@@ -549,7 +549,7 @@ function MiniCardBack({
 
 function CardSlot() {
   return (
-    <div className="h-12 w-9 rounded-md border border-dashed border-white/10 bg-white/[0.015]" />
+    <div className="h-10 w-7 rounded border border-dashed border-white/10 bg-white/[0.015] sm:h-12 sm:w-9 sm:rounded-md" />
   );
 }
 
@@ -575,8 +575,8 @@ function ControlButton({
       className={[
         "flex items-center justify-center rounded-full transition-colors",
         primary
-          ? "size-11 border border-sky-400/40 bg-sky-400/15 text-sky-100 hover:border-sky-300 hover:bg-sky-400/25"
-          : "size-9 text-sky-200 hover:bg-white/5",
+          ? "size-9 border border-sky-400/40 bg-sky-400/15 text-sky-100 hover:border-sky-300 hover:bg-sky-400/25 sm:size-11"
+          : "size-8 text-sky-200 hover:bg-white/5 sm:size-9",
         "disabled:cursor-not-allowed disabled:text-slate-700 disabled:hover:bg-transparent",
       ].join(" ")}
     >

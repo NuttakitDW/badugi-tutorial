@@ -18,7 +18,7 @@ export function ExampleCarousel({ examples }: ExampleCarouselProps) {
   const goNext = () => setIdx((i) => Math.min(total - 1, i + 1));
 
   return (
-    <div className="mt-8 flex items-center gap-2 sm:gap-3">
+    <div className="mt-6 flex items-center gap-1 sm:mt-8 sm:gap-3">
       {hasNav && (
         <SideArrow
           dir="left"
@@ -28,7 +28,7 @@ export function ExampleCarousel({ examples }: ExampleCarouselProps) {
         />
       )}
 
-      <figure className="min-w-0 flex-1 rounded-2xl border border-sky-400/20 bg-sky-400/[0.04] p-5 sm:p-6">
+      <figure className="min-w-0 flex-1 rounded-2xl border border-sky-400/20 bg-sky-400/[0.04] p-3.5 sm:p-6">
         <div className="flex items-center justify-between gap-3">
           <figcaption className="text-[10px] font-semibold uppercase tracking-[0.22em] text-sky-300/90">
             Example
@@ -41,20 +41,20 @@ export function ExampleCarousel({ examples }: ExampleCarouselProps) {
         </div>
 
         <div key={idx} className="example-fade" aria-live="polite">
-          <p className="mt-3 text-sm text-slate-300 sm:text-[15px]">
+          <p className="mt-2.5 text-[13px] leading-snug text-slate-300 sm:mt-3 sm:text-[15px] sm:leading-relaxed">
             {current.scenario}
           </p>
 
           {current.hands && current.hands.length > 0 && (
-            <div className="mt-5 space-y-4">
+            <div className="mt-3.5 space-y-3 sm:mt-5 sm:space-y-4">
               {current.hands.map((hand, i) => (
                 <div key={i}>
                   {hand.label && (
-                    <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                    <div className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400 sm:mb-2 sm:text-[11px]">
                       {hand.label}
                     </div>
                   )}
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2">
                     {hand.cards.map((c, ci) => (
                       <PlayingCard key={ci} rank={c.rank} suit={c.suit} />
                     ))}
@@ -64,13 +64,13 @@ export function ExampleCarousel({ examples }: ExampleCarouselProps) {
             </div>
           )}
 
-          <p className="mt-5 border-l-2 border-sky-400/50 pl-4 text-sm leading-relaxed text-slate-100 sm:text-[15px]">
+          <p className="mt-3.5 border-l-2 border-sky-400/50 pl-3 text-[13px] leading-snug text-slate-100 sm:mt-5 sm:pl-4 sm:text-[15px] sm:leading-relaxed">
             {current.takeaway}
           </p>
         </div>
 
         {hasNav && (
-          <div className="mt-5 flex justify-center gap-1.5">
+          <div className="mt-3.5 flex justify-center gap-1.5 sm:mt-5">
             {examples.map((_, i) => (
               <button
                 key={i}
@@ -134,8 +134,6 @@ function TriangleIcon({ dir }: { dir: "left" | "right" }) {
   const d = dir === "left" ? "M 17 4 L 7 12 L 17 20" : "M 7 4 L 17 12 L 7 20";
   return (
     <svg
-      width="40"
-      height="52"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -143,6 +141,7 @@ function TriangleIcon({ dir }: { dir: "left" | "right" }) {
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden
+      className="h-9 w-7 sm:h-[52px] sm:w-10"
     >
       <path d={d} />
     </svg>
