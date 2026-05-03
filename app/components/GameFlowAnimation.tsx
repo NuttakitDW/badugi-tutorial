@@ -435,7 +435,7 @@ function StakesBar({ street }: { street: string }) {
   return (
     <div className="mt-2.5 flex flex-wrap items-center gap-1 sm:mt-3 sm:gap-1.5">
       <span className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-[0.14em] text-slate-300 sm:rounded-md sm:px-2 sm:py-1 sm:text-[10px] sm:tracking-[0.18em]">
-        $40 / $80 Limit
+        $20 / $40 Fixed Limit
       </span>
       <BetSizePill label="Small" amount={40} active={smallActive} />
       <BetSizePill label="Big" amount={80} active={bigActive} />
