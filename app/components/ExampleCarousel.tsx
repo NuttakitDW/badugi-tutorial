@@ -3,12 +3,14 @@
 import { useState } from "react";
 import type { Example } from "@/app/lib/levels";
 import { PlayingCard } from "./PlayingCard";
+import { ui, useLocale } from "@/app/lib/i18n";
 
 interface ExampleCarouselProps {
   examples: Example[];
 }
 
 export function ExampleCarousel({ examples }: ExampleCarouselProps) {
+  const { t, format } = useLocale();
   const [idx, setIdx] = useState(0);
   const total = examples.length;
   const current = examples[idx];
@@ -24,14 +26,14 @@ export function ExampleCarousel({ examples }: ExampleCarouselProps) {
           dir="left"
           onClick={goPrev}
           disabled={idx === 0}
-          ariaLabel="Previous example"
+          ariaLabel={t(ui.common.previousExample)}
         />
       )}
 
       <figure className="min-w-0 flex-1 rounded-2xl border border-sky-400/20 bg-sky-400/[0.04] p-3.5 sm:p-6">
         <div className="flex items-center justify-between gap-3">
           <figcaption className="text-[10px] font-semibold uppercase tracking-[0.22em] text-sky-300/90">
-            Example
+            {t(ui.common.example)}
           </figcaption>
           {hasNav && (
             <span className="font-mono text-[11px] tabular-nums text-slate-400">
@@ -42,7 +44,7 @@ export function ExampleCarousel({ examples }: ExampleCarouselProps) {
 
         <div key={idx} className="example-fade" aria-live="polite">
           <p className="mt-2.5 text-[13px] leading-snug text-slate-300 sm:mt-3 sm:text-[15px] sm:leading-relaxed">
-            {current.scenario}
+            {t(current.scenario)}
           </p>
 
           {current.hands && current.hands.length > 0 && (
@@ -51,7 +53,7 @@ export function ExampleCarousel({ examples }: ExampleCarouselProps) {
                 <div key={i}>
                   {hand.label && (
                     <div className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400 sm:mb-2 sm:text-[11px]">
-                      {hand.label}
+                      {t(hand.label)}
                     </div>
                   )}
                   <div className="flex flex-wrap gap-1.5 sm:gap-2">
@@ -65,7 +67,7 @@ export function ExampleCarousel({ examples }: ExampleCarouselProps) {
           )}
 
           <p className="mt-3.5 border-l-2 border-sky-400/50 pl-3 text-[13px] leading-snug text-slate-100 sm:mt-5 sm:pl-4 sm:text-[15px] sm:leading-relaxed">
-            {current.takeaway}
+            {t(current.takeaway)}
           </p>
         </div>
 
@@ -76,7 +78,7 @@ export function ExampleCarousel({ examples }: ExampleCarouselProps) {
                 key={i}
                 type="button"
                 onClick={() => setIdx(i)}
-                aria-label={`Go to example ${i + 1}`}
+                aria-label={format(ui.common.goToExample, { n: i + 1 })}
                 className={[
                   "block h-1.5 rounded-full transition-all duration-200",
                   i === idx
@@ -94,7 +96,7 @@ export function ExampleCarousel({ examples }: ExampleCarouselProps) {
           dir="right"
           onClick={goNext}
           disabled={idx === total - 1}
-          ariaLabel="Next example"
+          ariaLabel={t(ui.common.nextExample)}
         />
       )}
     </div>

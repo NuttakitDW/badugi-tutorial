@@ -3,10 +3,21 @@
 import { useEffect, useState } from "react";
 import type { CardCode, SuitCode } from "@/app/lib/levels";
 import { SuitIcon } from "./PlayingCard";
+import { L, ui, useLocale, type LocalizedString } from "@/app/lib/i18n";
+
+type StreetKey =
+  | "preDraw"
+  | "draw1"
+  | "postDraw1"
+  | "draw2"
+  | "postDraw2"
+  | "draw3"
+  | "postDraw3"
+  | "showdown";
 
 type PlayerState = {
   bet: number;
-  action?: string;
+  action?: LocalizedString;
   reveal?: CardCode[];
   drawing?: number;
   position?: string;
@@ -15,9 +26,10 @@ type PlayerState = {
 };
 
 type Step = {
-  street: string;
-  action: string;
-  detail: string;
+  streetKey: StreetKey;
+  street: LocalizedString;
+  action: LocalizedString;
+  detail: LocalizedString;
   pot: number;
   justDealt?: boolean;
   acting?: "p1" | "p2";
@@ -25,143 +37,219 @@ type Step = {
   p2: PlayerState;
 };
 
+const STREETS: Record<StreetKey, LocalizedString> = {
+  preDraw: L("Pre-draw", "ก่อนจั่ว"),
+  draw1: L("Draw 1", "จั่วครั้งที่ 1"),
+  postDraw1: L("Post-draw 1", "หลังจั่วครั้งที่ 1"),
+  draw2: L("Draw 2", "จั่วครั้งที่ 2"),
+  postDraw2: L("Post-draw 2", "หลังจั่วครั้งที่ 2"),
+  draw3: L("Draw 3", "จั่วครั้งที่ 3"),
+  postDraw3: L("Post-draw 3", "หลังจั่วครั้งที่ 3"),
+  showdown: L("Showdown", "โชว์ดาวน์"),
+};
+
+const ACTIONS = {
+  raise: L("Raise", "เรส"),
+  threeBet: L("3-bet", "3-bet"),
+  call: L("Call", "คอล"),
+  bet: L("Bet", "เดิมพัน"),
+};
+
 const STEPS: Step[] = [
   {
-    street: "Pre-draw",
-    action: "Blinds are posted",
-    detail:
+    streetKey: "preDraw",
+    street: STREETS.preDraw,
+    action: L("Blinds are posted", "วางบลายด์"),
+    detail: L(
       "Player 1 holds the dealer button (D) and posts the $20 small blind. Player 2 posts the $40 big blind. Heads-up: the button acts first pre-draw, last after each draw.",
+      "ผู้เล่น 1 ถือปุ่มดีลเลอร์ (D) และวาง small blind $20 ผู้เล่น 2 วาง big blind $40 แบบ heads-up: ปุ่ม act ก่อนช่วง pre-draw และ act หลังสุดในรอบจั่วถัดไป",
+    ),
     pot: 60,
     p1: { bet: 20, position: "SB", dealt: false },
     p2: { bet: 40, position: "BB", dealt: false },
   },
   {
-    street: "Pre-draw",
-    action: "Cards dealt",
-    detail: "Each player gets 4 cards face down.",
+    streetKey: "preDraw",
+    street: STREETS.preDraw,
+    action: L("Cards dealt", "แจกไพ่"),
+    detail: L(
+      "Each player gets 4 cards face down.",
+      "ผู้เล่นแต่ละคนได้รับไพ่ 4 ใบ คว่ำหน้าไว้",
+    ),
     pot: 60,
     justDealt: true,
     p1: { bet: 20, position: "SB" },
     p2: { bet: 40, position: "BB" },
   },
   {
-    street: "Pre-draw",
-    action: "Player 1 raises to $80",
-    detail:
+    streetKey: "preDraw",
+    street: STREETS.preDraw,
+    action: L("Player 1 raises to $80", "ผู้เล่น 1 เรสเป็น $80"),
+    detail: L(
       "Pre-draw uses the small bet ($40). P1 puts in $60 more on top of the blind to make it $80.",
+      "ช่วง pre-draw ใช้เดิมพันเล็ก ($40) P1 เติมอีก $60 บนบลายด์ทำให้รวมเป็น $80",
+    ),
     pot: 120,
     acting: "p1",
-    p1: { bet: 80, position: "SB", action: "Raise" },
+    p1: { bet: 80, position: "SB", action: ACTIONS.raise },
     p2: { bet: 40, position: "BB" },
   },
   {
-    street: "Pre-draw",
-    action: "Player 2 re-raises to $120 (3-bet)",
-    detail: "P2 reads strength and puts in another $40 bet on top.",
+    streetKey: "preDraw",
+    street: STREETS.preDraw,
+    action: L(
+      "Player 2 re-raises to $120 (3-bet)",
+      "ผู้เล่น 2 รีเรสเป็น $120 (3-bet)",
+    ),
+    detail: L(
+      "P2 reads strength and puts in another $40 bet on top.",
+      "P2 อ่านว่ามือแข็งและเติมอีก $40 บนทอป",
+    ),
     pot: 200,
     acting: "p2",
     p1: { bet: 80, position: "SB" },
-    p2: { bet: 120, position: "BB", action: "3-bet" },
+    p2: { bet: 120, position: "BB", action: ACTIONS.threeBet },
   },
   {
-    street: "Pre-draw",
-    action: "Player 1 calls",
-    detail: "P1 matches the $40. Pre-draw betting closes at $240 in the pot.",
+    streetKey: "preDraw",
+    street: STREETS.preDraw,
+    action: L("Player 1 calls", "ผู้เล่น 1 คอล"),
+    detail: L(
+      "P1 matches the $40. Pre-draw betting closes at $240 in the pot.",
+      "P1 คอลเพิ่ม $40 รอบเดิมพัน pre-draw ปิดที่พอต $240",
+    ),
     pot: 240,
     acting: "p1",
-    p1: { bet: 120, position: "SB", action: "Call" },
+    p1: { bet: 120, position: "SB", action: ACTIONS.call },
     p2: { bet: 120, position: "BB" },
   },
   {
-    street: "Draw 1",
-    action: "Players discard and draw",
-    detail:
+    streetKey: "draw1",
+    street: STREETS.draw1,
+    action: L(
+      "Players discard and draw",
+      "ผู้เล่นทิ้งและจั่ว",
+    ),
+    detail: L(
       "P1 draws 1 card (improving a 3-card). P2 draws 2 (weaker, looking to catch up).",
+      "P1 จั่ว 1 ใบ (ปรับมือ 3 ใบ) P2 จั่ว 2 ใบ (อ่อนกว่า กำลังตามให้ทัน)",
+    ),
     pot: 240,
     p1: { bet: 0, drawing: 1 },
     p2: { bet: 0, drawing: 2 },
   },
   {
-    street: "Post-draw 1",
-    action: "Player 2 bets $40",
-    detail: "Post-draw 1 still uses the small bet ($40).",
+    streetKey: "postDraw1",
+    street: STREETS.postDraw1,
+    action: L("Player 2 bets $40", "ผู้เล่น 2 เดิมพัน $40"),
+    detail: L(
+      "Post-draw 1 still uses the small bet ($40).",
+      "หลังจั่วครั้งที่ 1 ยังใช้เดิมพันเล็ก ($40)",
+    ),
     pot: 280,
     acting: "p2",
     p1: { bet: 0 },
-    p2: { bet: 40, action: "Bet" },
+    p2: { bet: 40, action: ACTIONS.bet },
   },
   {
-    street: "Post-draw 1",
-    action: "Player 1 calls",
-    detail: "P1 matches the $40 to see another card.",
+    streetKey: "postDraw1",
+    street: STREETS.postDraw1,
+    action: L("Player 1 calls", "ผู้เล่น 1 คอล"),
+    detail: L(
+      "P1 matches the $40 to see another card.",
+      "P1 คอล $40 เพื่อจั่วอีกใบ",
+    ),
     pot: 320,
     acting: "p1",
-    p1: { bet: 40, action: "Call" },
+    p1: { bet: 40, action: ACTIONS.call },
     p2: { bet: 40 },
   },
   {
-    street: "Draw 2",
-    action: "Players draw again",
-    detail: "Both draw one card.",
+    streetKey: "draw2",
+    street: STREETS.draw2,
+    action: L("Players draw again", "ผู้เล่นจั่วอีกครั้ง"),
+    detail: L("Both draw one card.", "ทั้งคู่จั่วหนึ่งใบ"),
     pot: 320,
     p1: { bet: 0, drawing: 1 },
     p2: { bet: 0, drawing: 1 },
   },
   {
-    street: "Post-draw 2",
-    action: "Player 2 bets $80",
-    detail: "After draw 2 the betting doubles to the big bet ($80).",
+    streetKey: "postDraw2",
+    street: STREETS.postDraw2,
+    action: L("Player 2 bets $80", "ผู้เล่น 2 เดิมพัน $80"),
+    detail: L(
+      "After draw 2 the betting doubles to the big bet ($80).",
+      "หลังรอบจั่วที่ 2 เดิมพันเพิ่มเป็นเท่าตัว — เดิมพันใหญ่ ($80)",
+    ),
     pot: 400,
     acting: "p2",
     p1: { bet: 0 },
-    p2: { bet: 80, action: "Bet" },
+    p2: { bet: 80, action: ACTIONS.bet },
   },
   {
-    street: "Post-draw 2",
-    action: "Player 1 calls",
-    detail: "P1 calls the big bet.",
+    streetKey: "postDraw2",
+    street: STREETS.postDraw2,
+    action: L("Player 1 calls", "ผู้เล่น 1 คอล"),
+    detail: L("P1 calls the big bet.", "P1 คอลเดิมพันใหญ่"),
     pot: 480,
     acting: "p1",
-    p1: { bet: 80, action: "Call" },
+    p1: { bet: 80, action: ACTIONS.call },
     p2: { bet: 80 },
   },
   {
-    street: "Draw 3",
-    action: "Last draw — P1 stands pat",
-    detail:
+    streetKey: "draw3",
+    street: STREETS.draw3,
+    action: L(
+      "Last draw — P1 stands pat",
+      "รอบจั่วสุดท้าย — P1 อยู่นิ่ง",
+    ),
+    detail: L(
       "P1 is happy with their hand (a made 7-Badugi). P2 draws one trying to catch.",
+      "P1 พอใจกับมือของตน (ทำ 7-Badugi ได้แล้ว) P2 จั่วหนึ่งใบเพื่อพยายามตาม",
+    ),
     pot: 480,
     p1: { bet: 0, drawing: 0 },
     p2: { bet: 0, drawing: 1 },
   },
   {
-    street: "Post-draw 3",
-    action: "Player 2 bets $80",
-    detail: "Final betting round.",
+    streetKey: "postDraw3",
+    street: STREETS.postDraw3,
+    action: L("Player 2 bets $80", "ผู้เล่น 2 เดิมพัน $80"),
+    detail: L("Final betting round.", "รอบเดิมพันสุดท้าย"),
     pot: 560,
     acting: "p2",
     p1: { bet: 0 },
-    p2: { bet: 80, action: "Bet" },
+    p2: { bet: 80, action: ACTIONS.bet },
   },
   {
-    street: "Post-draw 3",
-    action: "Player 1 calls",
-    detail: "P1 calls and we go to showdown.",
+    streetKey: "postDraw3",
+    street: STREETS.postDraw3,
+    action: L("Player 1 calls", "ผู้เล่น 1 คอล"),
+    detail: L(
+      "P1 calls and we go to showdown.",
+      "P1 คอลและเข้าสู่โชว์ดาวน์",
+    ),
     pot: 640,
     acting: "p1",
-    p1: { bet: 80, action: "Call" },
+    p1: { bet: 80, action: ACTIONS.call },
     p2: { bet: 80 },
   },
   {
-    street: "Showdown",
-    action: "Player 1 wins with a 7-Badugi",
-    detail:
+    streetKey: "showdown",
+    street: STREETS.showdown,
+    action: L(
+      "Player 1 wins with a 7-Badugi",
+      "ผู้เล่น 1 ชนะด้วย 7-Badugi",
+    ),
+    detail: L(
       "P1's 7-5-3-A rainbow beats P2's 8-6-2-A rainbow — same idea, lower high card wins.",
+      "7-5-3-A เรนโบว์ของ P1 ชนะ 8-6-2-A เรนโบว์ของ P2 — หลักเดียวกัน ไพ่สูงสุดที่ต่ำกว่าเป็นผู้ชนะ",
+    ),
     pot: 640,
     p1: {
       bet: 0,
       winner: true,
-      action: "+ $640",
+      action: L("+ $640", "+ $640"),
       reveal: [
         { rank: "7", suit: "S" },
         { rank: "5", suit: "H" },
@@ -184,6 +272,7 @@ const STEPS: Step[] = [
 const STEP_DURATION = 2600;
 
 export function GameFlowAnimation() {
+  const { t, format } = useLocale();
   const [step, setStep] = useState(0);
   const [playing, setPlaying] = useState(false);
   const total = STEPS.length;
@@ -218,10 +307,10 @@ export function GameFlowAnimation() {
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <figcaption className="text-[10px] font-semibold uppercase tracking-[0.22em] text-sky-300/90">
-            Hand Walkthrough
+            {t(ui.gameFlow.handWalkthrough)}
           </figcaption>
           <span className="rounded-full border border-sky-400/30 bg-sky-400/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-sky-200">
-            {current.street}
+            {t(current.street)}
           </span>
         </div>
         <span className="font-mono text-[11px] tabular-nums text-slate-400">
@@ -229,17 +318,17 @@ export function GameFlowAnimation() {
         </span>
       </div>
 
-      <StakesBar street={current.street} />
+      <StakesBar streetKey={current.streetKey} />
 
       <h3 className="mt-3 text-sm font-semibold text-white sm:mt-4 sm:text-lg">
-        {current.action}
+        {t(current.action)}
       </h3>
 
       <div key={step} className="example-fade mt-3.5 sm:mt-5">
         <div className="grid grid-cols-[1fr_auto_1fr] items-start gap-1.5 sm:gap-6">
           <PlayerView
             player={current.p1}
-            label="Player 1"
+            label={t(ui.gameFlow.player1)}
             justDealt={current.justDealt}
             acting={current.acting === "p1"}
             hasButton
@@ -247,14 +336,14 @@ export function GameFlowAnimation() {
           <PotView amount={current.pot} />
           <PlayerView
             player={current.p2}
-            label="Player 2"
+            label={t(ui.gameFlow.player2)}
             justDealt={current.justDealt}
             acting={current.acting === "p2"}
           />
         </div>
 
         <p className="mt-4 border-l-2 border-sky-400/50 pl-3 text-[13px] leading-snug text-slate-100 sm:mt-5 sm:pl-4 sm:text-[15px] sm:leading-relaxed">
-          {current.detail}
+          {t(current.detail)}
         </p>
       </div>
 
@@ -264,7 +353,7 @@ export function GameFlowAnimation() {
             key={i}
             type="button"
             onClick={() => setStep(i)}
-            aria-label={`Go to step ${i + 1}`}
+            aria-label={format(ui.gameFlow.goToStep, { n: i + 1 })}
             className={[
               "h-1 flex-1 rounded-full transition-colors",
               i < step
@@ -278,13 +367,31 @@ export function GameFlowAnimation() {
       </div>
 
       <div className="mt-3 flex items-center justify-center gap-2 sm:mt-4">
-        <ControlButton onClick={goPrev} disabled={step === 0} ariaLabel="Previous step">
+        <ControlButton
+          onClick={goPrev}
+          disabled={step === 0}
+          ariaLabel={t(ui.gameFlow.previousStep)}
+        >
           <ChevronIcon dir="left" />
         </ControlButton>
-        <ControlButton onClick={togglePlay} primary ariaLabel={playing ? "Pause" : isLast ? "Replay" : "Play"}>
+        <ControlButton
+          onClick={togglePlay}
+          primary
+          ariaLabel={
+            playing
+              ? t(ui.gameFlow.pause)
+              : isLast
+                ? t(ui.gameFlow.replay)
+                : t(ui.gameFlow.play)
+          }
+        >
           {playing ? <PauseIcon /> : isLast ? <ReplayIcon /> : <PlayIcon />}
         </ControlButton>
-        <ControlButton onClick={goNext} disabled={isLast} ariaLabel="Next step">
+        <ControlButton
+          onClick={goNext}
+          disabled={isLast}
+          ariaLabel={t(ui.gameFlow.nextStep)}
+        >
           <ChevronIcon dir="right" />
         </ControlButton>
       </div>
@@ -305,6 +412,7 @@ function PlayerView({
   acting?: boolean;
   hasButton?: boolean;
 }) {
+  const { t, format } = useLocale();
   const notDealt = player.dealt === false;
   return (
     <div
@@ -387,7 +495,7 @@ function PlayerView({
               player.winner ? "text-amber-300" : "text-sky-300",
             ].join(" ")}
           >
-            {player.action}
+            {t(player.action)}
           </span>
         )}
         {player.drawing != null && (
@@ -401,11 +509,11 @@ function PlayerView({
           >
             {player.drawing === 0 ? (
               <>
-                <LockIcon /> Stand pat
+                <LockIcon /> {t(ui.gameFlow.standPat)}
               </>
             ) : (
               <>
-                <SwapIcon /> Drew {player.drawing}
+                <SwapIcon /> {format(ui.gameFlow.drewN, { n: player.drawing })}
               </>
             )}
           </span>
@@ -416,10 +524,12 @@ function PlayerView({
 }
 
 function DealerButton() {
+  const { t } = useLocale();
+  const label = t(ui.gameFlow.dealerButton);
   return (
     <span
-      title="Dealer button"
-      aria-label="Dealer button"
+      title={label}
+      aria-label={label}
       className="inline-flex size-5 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-amber-50 to-amber-200 text-[11px] font-black leading-none text-slate-900 shadow-[0_2px_8px_rgba(251,191,36,0.45)] ring-1 ring-amber-300/60"
       style={{ fontFamily: "ui-sans-serif, system-ui, sans-serif" }}
     >
@@ -428,17 +538,18 @@ function DealerButton() {
   );
 }
 
-function StakesBar({ street }: { street: string }) {
-  const smallActive = street === "Pre-draw" || street === "Post-draw 1";
-  const bigActive = street === "Post-draw 2" || street === "Post-draw 3";
+function StakesBar({ streetKey }: { streetKey: StreetKey }) {
+  const { t } = useLocale();
+  const smallActive = streetKey === "preDraw" || streetKey === "postDraw1";
+  const bigActive = streetKey === "postDraw2" || streetKey === "postDraw3";
 
   return (
     <div className="mt-2.5 flex flex-wrap items-center gap-1 sm:mt-3 sm:gap-1.5">
       <span className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-[0.14em] text-slate-300 sm:rounded-md sm:px-2 sm:py-1 sm:text-[10px] sm:tracking-[0.18em]">
-        $20 / $40 Fixed Limit
+        {t(ui.gameFlow.fixedLimit)}
       </span>
-      <BetSizePill label="Small" amount={40} active={smallActive} />
-      <BetSizePill label="Big" amount={80} active={bigActive} />
+      <BetSizePill label={t(ui.gameFlow.small)} amount={40} active={smallActive} />
+      <BetSizePill label={t(ui.gameFlow.big)} amount={80} active={bigActive} />
     </div>
   );
 }
@@ -468,10 +579,11 @@ function BetSizePill({
 }
 
 function PotView({ amount }: { amount: number }) {
+  const { t } = useLocale();
   return (
     <div className="flex shrink-0 flex-col items-center gap-1 px-1 sm:gap-1.5 sm:px-2">
       <div className="text-[9px] font-semibold uppercase tracking-[0.14em] text-slate-400 sm:text-[10px] sm:tracking-[0.18em]">
-        Pot
+        {t(ui.gameFlow.pot)}
       </div>
       <div
         key={amount}

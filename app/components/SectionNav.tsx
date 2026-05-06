@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ui, useLocale } from "@/app/lib/i18n";
 
 interface SectionNavProps {
   items: Array<{ id: string; title: string }>;
 }
 
 export function SectionNav({ items }: SectionNavProps) {
+  const { t } = useLocale();
   const [activeId, setActiveId] = useState<string>(items[0]?.id ?? "");
 
   useEffect(() => {
@@ -35,7 +37,7 @@ export function SectionNav({ items }: SectionNavProps) {
 
   return (
     <nav
-      aria-label="Levels"
+      aria-label={t(ui.nav.levelsLabel)}
       className="pointer-events-auto fixed right-6 top-1/2 z-30 hidden -translate-y-1/2 lg:block"
     >
       <ol className="flex flex-col gap-1.5">
